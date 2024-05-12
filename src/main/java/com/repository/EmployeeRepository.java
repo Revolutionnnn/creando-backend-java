@@ -8,8 +8,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.spi.DirStateFactory.Result;
-
 import com.model.Employee;
 import com.utils.DatabaseConnetion;
 
@@ -67,9 +65,17 @@ public class EmployeeRepository implements Repository<Employee> {
     }
 
     @Override
-    public void delete(Integer id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'delete'");
+    public void delete(Integer id) throws SQLException {
+        if (getById(id) != null) {
+            try (PreparedStatement myStamt = getConnection().prepareStatement("DELETE FROM employees WHERE id= ?")) {
+                myStamt.setInt(1, id);
+                myStamt.executeUpdate();
+                System.out.println("Eliminado");
+            }
+            ;
+        } else {
+            System.out.println("El empleado no existe");
+        }
     }
 
     private Employee createEmployee(ResultSet myRest) throws SQLException {
